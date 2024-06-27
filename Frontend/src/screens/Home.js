@@ -1,7 +1,7 @@
 import { ImageBackground, Platform, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
 import Card from '../components/Card'
-import backgroundImage from '../assets/ui-images/EasyRentBghome.png'
+import backgroundImage from '../assets/ui-images/EasyRentBgmRed.png'
 import { Feather } from '@expo/vector-icons';
 import GlobalStyles from '../GlobalStyles';
 import { ScrollView } from 'react-native';
@@ -16,6 +16,9 @@ import Kindle from '../assets/ui-images/kindle.jpeg'
 import Tripod from '../assets/ui-images/tripod.jpeg'
 import TeaPot from '../assets/ui-images/teapot.jpeg'
 import Bat from '../assets/ui-images/bat.jpeg'
+import Categories from '../components/Categories';
+import { categoryImages } from '../utils/Images';
+import { FlatList } from 'react-native';
 
 
 const Home = () => {
@@ -34,6 +37,21 @@ const Home = () => {
     { id: 10, title: 'Tea pot', price: '500/-', specs: 'Ceramic, 1L', image: TeaPot },
     { id: 11, title: 'Bat', price: '1200/-', specs: 'Wooden, Standard Size', image: Bat },
   ];
+
+  const categories = [
+    { id:1, title: 'Cars', image: categoryImages.cars},
+    { id:2, title: 'Mobiles', image: categoryImages.mobiles},
+    { id:3, title: 'Bikes', image: categoryImages.bikes},
+    { id:4, title: 'Electronics', image: categoryImages.electronics},
+    { id:5, title: 'Furniture', image: categoryImages.furniture},
+    { id:6, title: 'Fashion', image: categoryImages.fashion},
+    { id:7, title: 'Musical Instruments', image: categoryImages.musical},
+    { id:8, title: 'Pets', image: categoryImages.pets},
+    { id:9, title: 'Cars', image: categoryImages.cars},
+
+  ]
+
+  const props = categories[0];
   
   return (
     <ImageBackground source={backgroundImage} className="flex-1 h-full w-full" resizeMethod='cover'>
@@ -48,9 +66,18 @@ const Home = () => {
             </View>
           </View>
 
-          <ScrollView className='mt-[10%] mx-[3%]'>
+          <ScrollView className='mt-[10%] mx-[3%]' showsVerticalScrollIndicator={false}>
+
             {/* Categories */}
-          <View className={`h-[7%] rounded-2xl bg-white ${dropShadow}`}>
+          <View className={`flex-row flex-grow items-center h-[5%] rounded-2xl bg-white ${dropShadow}`}>
+            <ScrollView horizontal={true} className={`h-[100%]`} contentContainerStyle={styles.scrollViewContent} showsHorizontalScrollIndicator={false}>
+            {categories.map(category => (
+              <View className='justify-center h-[95%] w-[15%] ml-[3.5%] ' key={category.id}>
+                <Categories props={category}/>
+              </View>))}
+             
+              </ScrollView>
+              
           </View>
 
               {/* Cards */}
@@ -78,5 +105,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-  }
+  },
+  scrollViewContent: {
+    alignItems: 'center',
+  },
 })
