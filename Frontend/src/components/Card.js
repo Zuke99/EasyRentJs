@@ -1,5 +1,6 @@
-import { Image, Platform, StyleSheet, Text, View } from 'react-native'
+import { Image, Platform, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Card = ({ card }) => {
     const dropShadow = `${Platform.OS === 'android' ? 'shadow shadow-black' : 'shadow'}`
@@ -22,7 +23,7 @@ const Card = ({ card }) => {
       </View>
 
       {/* Rest */}
-      <View className='px-[4%] h-[40%] pb-[2%]'>
+      <View className='px-[6%] h-[40%] pb-[2%]'>
         {/* Title */}
         <View className='h-[20%] mt-[5%]'>
           <Text className='font-semibold'>{card.title}</Text>
@@ -33,9 +34,12 @@ const Card = ({ card }) => {
           <Text className='text-xs'>{card.specs}</Text>
         </View>
 
-        {/* Price */}
-        <View className='flex-1 h-[30%] justify-center'>
+        {/* Price  & Fav*/}
+        <View className=' flex-1 flex-row h-[30%] justify-between items-center'>
           <Text className='text-xs font-semibold'>{card.price}</Text>
+          <TouchableOpacity className='h-[100%] justify-center w-[15%] items-end'>
+            <Ionicons name='heart-outline' size={15} />
+          </TouchableOpacity>
         </View>
       </View>
       
