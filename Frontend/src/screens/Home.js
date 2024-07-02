@@ -1,8 +1,8 @@
-import { ImageBackground, Platform, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { ImageBackground, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Card from '../components/Card'
-import backgroundImage from '../assets/ui-images/EasyRentBgmRed.png'
-import { Feather } from '@expo/vector-icons';
+import backgroundImage from '../assets/ui-images/post.png'
+import { Feather, Ionicons } from '@expo/vector-icons';
 import GlobalStyles from '../GlobalStyles';
 import { ScrollView } from 'react-native';
 import Car from '../assets/ui-images/car.jpeg'
@@ -21,7 +21,7 @@ import { categoryImages } from '../utils/Images';
 import { FlatList } from 'react-native';
 
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const image = require('../assets/ui-images/EasyRentBghome.png');
   const dropShadow = `${Platform.OS === 'android' ? 'shadow shadow-black' : 'shadow'}`
   const cards = [
@@ -58,15 +58,33 @@ const Home = () => {
       <SafeAreaView style={GlobalStyles.droidSafeArea}>
         <View className="h-full">
 
+          {/* Location & Notification*/}
+          <View className='flex-row mt-[2%] justify-center items-center'>
+            <TouchableOpacity className='flex-row items-center w-[87%] '>
+              <Ionicons name='location-outline' size={20} color={'white'}/>
+              <Text className='font-semibold mx-1 text-white'>Secunderabad 500017, TG</Text>
+              <Ionicons name='chevron-down-outline' size={20} color={'white'}/>
+            </TouchableOpacity>
+
+            <TouchableOpacity className=''>
+              <Ionicons name='notifications-outline' size={20} color={'white'}/>
+            </TouchableOpacity>
+          </View>
+
           {/* Search Bar */}
-          <View className="flex-col mt-[8%] h-[4.5%] items-center">
-            <View className="flex-row h-[100%] w-[90%] px-[2%] items-center rounded-full bg-white">
+          <View className="flex-col mt-[2%] h-[4.5%] items-center ">
+            <View className="flex-row h-9 w-[90%] px-[2%] items-center rounded-full bg-white">
               <Feather name="search" size={24} color="gray" />
-              <TextInput className=" h-[100%] w-[80%] px-3" placeholder="Search" />
+              <TextInput className=" h-8 w-[80%] px-3" placeholder="Find Cars, Bikes, Cameras and more..." />
             </View>
           </View>
 
           <ScrollView className='mt-[10%] mx-[3%]' showsVerticalScrollIndicator={false}>
+
+          <View className='m-1 mb-[4%]'>
+            <Text className='font-semibold'>Explore Categories</Text>
+          </View>
+
 
             {/* Categories */}
           <View className={`flex-row flex-grow items-center h-[5%] rounded-2xl bg-white ${dropShadow}`}>
@@ -79,13 +97,16 @@ const Home = () => {
               </ScrollView>
               
           </View>
-
+          <View className='m-1 mt-[8%]'>
+            <Text className='font-semibold'>Top Recommendations</Text>
+          </View>
               {/* Cards */}
-              <View className="flex-row mt-[8%] h-[100%] flex-wrap mb-[50%]">
+              <View className="flex-row mt-[1%] h-[100%] flex-wrap mb-[50%]">
                 {cards.map(card => (
-                  <View  key={card.id} className={`h-[27vh] w-[45%] rounded-2xl ml-[3%] my-[2%]`}>
+                  <TouchableHighlight className={`h-[27vh] w-[45%] rounded-2xl ml-[3%] my-[2%]`}
+                  key={card.id} onPress={()=> navigation.navigate('PostDetails', { card })}>
                     <Card card={card}></Card>
-                </View>))}
+                </TouchableHighlight>))}
               </View>
           </ScrollView>
 
