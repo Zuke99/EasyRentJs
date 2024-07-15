@@ -6,10 +6,20 @@ const registerUser = async (data) => {
         username: data.username,
         password: data.password
     };
-    const user = await UserModel.create(doc);
-    const result = user.save();
+    const isUsernamExists = await checkUsernameOrEmailAlreadyExists(doc.username);
+    var result = "";
+    if(!isUsernamExists) {
+        const user = await UserModel.create(doc);
+        result = user.save();
+    }
 
     return result;
+}
+
+const checkUsernameOrEmailAlreadyExists = async (username) => {
+    const user = await UserModel.findOne({ username: username});
+    if(user) return true;
+    return false;
 }
 
 module.exports = {
