@@ -11,27 +11,44 @@ const SignUp = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isUsernameExist, setIsUsernameExist] = useState(false);
+  const [validationMessage, setValidationMessage] = useState('');
+  const [isInputValidated, setIsInputValidated] = useState(true);
 
   const dispatch = useDispatch();
 
   const SignUpButtonHandler = () => {
-    if (validatePassword()) {
+    if (validateInputs()) {
       const data = {
-        username: username,
+        username: username.toLowerCase(),
         password: password
       }
       dispatch(registerUser(data))
-      .then(navigation.navigate('SigninScreen'))
-      // .catch(console.log(error));
-      //navigation.navigate('SigninScreen')
+        .then((result) => {
+          if (result.meta.requestStatus === "fulfilled") {
+            navigation.navigate('SigninScreen');
+          } else {
+            alert(result.payload);
+          }
+        })
+        .catch(err => {
+          console.log("error", err);
+        });
     } else {
-      console.log("Not Validated");
+      setIsInputValidated(false);
     }
   }
 
-  const validatePassword = () => {
-    if (password === confirmPassword) return true;
-    return false;
+  const validateInputs = () => {
+    if(password.length < 8 ){
+      setValidationMessage("Password should contain atleast 8 charactes");
+      return false;
+    } else if (password !== confirmPassword) {
+      setValidationMessage("Password and Confirm Password do not match");
+      return false;
+    }
+
+    return true;
   }
 
   return (
@@ -68,6 +85,7 @@ const SignUp = ({ navigation }) => {
                       onChangeText={setUsername}
                       placeholder="Enter Username or Email" />
                   </View>
+                 
 
                   <View className='w-[80%] my-2'>
                     <TextInput className='border border-slate-300 h-8 rounded-xl px-5'
@@ -85,7 +103,9 @@ const SignUp = ({ navigation }) => {
 
                   {/* Validation Message View */}
                   <View className='h-5 mt-1 w-[80%]'>
-                    <Text className='text-[12px] px-3 text-red-600'>Username already exists</Text>
+                    {!isInputValidated &&
+                      <Text className='text-[12px] px-3 text-red-600'>{validationMessage}</Text>
+                    }
                   </View>
 
                   <View className='flex-row w-[80%] my-2 items-center justify-center'>
