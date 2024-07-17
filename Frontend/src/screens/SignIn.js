@@ -1,10 +1,30 @@
 import { ImageBackground, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import backgroundImage from '../assets/ui-images/LogoBg.png'
 import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons'
 import GlobalStyles from '../GlobalStyles'
+import { useDispatch } from 'react-redux'
+import { loginUser } from '../features/actions/authActions'
 
 const SignIn = ({ navigation }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const dispatch = useDispatch();
+
+  const handleLogin = () => {
+    const data = {
+      username: username.toLowerCase(),
+      password: password
+    }
+
+    dispatch(loginUser(data))
+    .then((results) => {
+      console.log("results", JSON.stringify(results, null, 2))
+    })
+    
+  }
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -10}
@@ -37,16 +57,21 @@ const SignIn = ({ navigation }) => {
                 <View className='justify-center items-center'>
                   <View className='w-[80%] my-2'>
                     <TextInput className='border border-slate-300 h-8 rounded-xl px-5'
-                      placeholder="Enter Username or Email" />
+                      placeholder="Enter Username or Email" 
+                      onChangeText={setUsername}
+                      />
                   </View>
 
                   <View className='w-[80%] my-2'>
                     <TextInput className='border border-slate-300 h-8 rounded-xl px-5'
-                      placeholder="Enter Password" />
+                      placeholder="Enter Password"
+                      onChangeText={setPassword}
+                       />
                   </View>
 
                   <View className='flex-row w-[80%] my-2 items-center justify-center'>
-                    <TouchableOpacity className='flex-row  w-[60%] h-8 rounded-xl justify-center items-center bg-ui_red'>
+                    <TouchableOpacity className='flex-row  w-[60%] h-8 rounded-xl justify-center items-center bg-ui_red'
+                      onPress={handleLogin}>
                       <Text className='mx-1 font-semibold text-white'>Login</Text>
                       <Entypo name='login' size={15} color={'white'} />
                     </TouchableOpacity>
