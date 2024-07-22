@@ -9,7 +9,6 @@ const PostDetails = ({ route, navigation }) => {
     <ImageBackground source={backgroundImage} className="flex-1 h-full w-full" resizeMethod='cover'>
       <View className='h-full'>
 
-
         {/* Header */}
         <View className='flex-row h-[12%] justify-start items-end '>
           <View className='flex-1 justify-end w-[40%]'>
