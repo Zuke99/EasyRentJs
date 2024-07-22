@@ -16,6 +16,7 @@ import Price from './src/screens/Price';
 import PostDetails from './src/screens/PostDetails';
 import SignIn from './src/screens/SignIn';
 import SignUp from './src/screens/SignUp';
+import Location from './src/screens/Location';
 
 
 const Stack = createNativeStackNavigator();
@@ -28,6 +29,7 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="PostScreen" component={Post} />
         <Stack.Screen name="Price" component={Price} />
+        <Stack.Screen name='Location' component={Location} />
       </Stack.Navigator>
     );
   }

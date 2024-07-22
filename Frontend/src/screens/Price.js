@@ -1,10 +1,11 @@
-import { StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native'
+import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Switch, Text, TextInput, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native'
 import GlobalStyles from '../GlobalStyles'
 import { ImageBackground } from 'react-native'
 import backgroundImage from '../assets/ui-images/post.png'
 import { SelectList } from 'react-native-dropdown-select-list'
+import { MaterialIcons } from '@expo/vector-icons';
 
 const categories = [
   { key: '1', value: 'Cars' },
@@ -18,56 +19,86 @@ const categories = [
   { key: '9', value: 'Misc' },
 ]
 
-const Price = () => {
+const Price = ({ navigation }) => {
   const [category, setCategory] = useState();
+  const [isDepositAmountEnabled, setIsDepositAmountEnabled] = useState(false);
+
+  const handleDepositAmountSwitch = () => {
+    setIsDepositAmountEnabled(previousState => !previousState);
+  }
   return (
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -10}
+      >
     <ImageBackground source={backgroundImage} className="flex-1 h-full w-full" resizeMethod='cover'>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={GlobalStyles.droidSafeArea}>
 
-        <View className='justify-center items-center h-full'>
+        <View className='h-full'>
 
-
-          <View className=' w-[70%] h-8 my-[2%]'>
-            <TextInput className='border border-slate-300 h-8 rounded-xl px-5'
-              placeholder="Enter your locality" />
-            <TouchableOpacity>
-              <Text className='text-sm text-gray-500'>Select Automatically</Text>
+          <View>
+            <TouchableOpacity className='mx-2 my-2 w-[20%]'
+              onPress={() => navigation.goBack()}>
+              <MaterialIcons name='keyboard-backspace' size={35} color={'white'} />
             </TouchableOpacity>
           </View>
 
-          {/* Price */}
-          <View className=' w-[30%] h-[30%] my-[2%]'>
-            <Text className='m-2'>Enter Price</Text>
-            <View className='flex-row items-center justify-center'>
-              <TextInput className='border border-slate-300 h-8 w-[100%] rounded-xl px-5 my-2 mr-1'
-                placeholder='Day' keyboardType='numeric' />
-              <Text>/day</Text>
+          <View className='justify-center items-center w-[100%] h-[80%]'>
+
+            {/* Price */}
+            <View className=' w-[70%] h-44 mt-[20%]'>
+              {/* <Text className='m-2'>Enter Price</Text> */}
+              <View className='flex w-[90%]'>
+              <Text className='text-xs'>Price a Day</Text>
+                <TextInput className='border border-slate-300 h-8 w-[100%] rounded-md px-5 my-1 mr-1'
+                  placeholder='Enter amount per Day' keyboardType='numeric' />
+              </View>
+              <View className='flex w-[90%]'>
+              <Text className='text-xs'>Price a Week</Text>
+                <TextInput className='border border-slate-300 h-8 w-[100%] rounded-md px-5 my-1 mr-1'
+                  placeholder='Enter amount per Week' keyboardType='numeric' />
+              </View>
+              <View className='flex w-[90%]'>
+              <Text className='text-xs'>Price a Month</Text>
+                <TextInput className='border border-slate-300 h-8 w-[100%] rounded-md px-5 my-1 mr-1'
+                  placeholder='Enter amount per Month' keyboardType='numeric' />
+              </View>
             </View>
-            <View className='flex-row items-center justify-center'>
-              <TextInput className='border border-slate-300 h-8 w-[100%] rounded-xl px-5 my-2 mr-1'
-                placeholder='Week' keyboardType='numeric' />
-              <Text>/day</Text>
+
+            {/* Deposit Amount */}
+            <View className=' w-[70%] h-24 mt-2'>
+            <View className='flex w-[90%]'>
+              <Text className='text-xs'>Do you want to set a prior deposit amount?</Text>
+              <Switch value={isDepositAmountEnabled} onValueChange={handleDepositAmountSwitch} className='my-1'/>
+              {isDepositAmountEnabled && <TextInput className='border border-slate-300 h-8 w-[100%] rounded-md px-5 my-1 mr-1'
+                  placeholder='Enter the Security/Deposit Amount' keyboardType='numeric' />}
             </View>
-            <View className='flex-row items-center justify-center'>
-              <TextInput className='border border-slate-300 h-8 w-[100%] rounded-xl px-5 my-2 mr-1'
-                placeholder='Month' keyboardType='numeric' />
-              <Text>/day</Text>
             </View>
+
+            {/* Categories */}
+            <View className='w-[70%] h-36 mt-4 mb-6'>
+              <SelectList boxStyles={{ borderColor: '#c1c1c1' }} placeholder='Category' searchPlaceholder='Search'
+                dropdownStyles={{ height: 100 }}
+                setSelected={(val) => setCategory(val)} data={categories} save='value'
+              />
+            </View>
+
+        
+
+            {/* Create Post Button */}
+            <View className='justify-center items-center w-[100%]'>
+            <TouchableOpacity onPress={() => navigation.navigate('Location')}
+                  className='w-[40%] h-8 items-center justify-center bg-ui_red rounded-xl'>
+                  <Text className='text-white font-bold'>Next</Text>
+                </TouchableOpacity>
+            </View>
+
           </View>
-
-          {/* Categories */}
-
-          <View className='w-[70%] h-16 my-[2%]'>
-            <SelectList boxStyles={{ borderColor: '#c1c1c1' }} placeholder='Category' searchPlaceholder='Search'
-              dropdownStyles={{ height: 130 }}
-              setSelected={(val) => setCategory(val)} data={categories} save='value'
-            />
-          </View>
-
-
         </View>
       </SafeAreaView>
+        </TouchableWithoutFeedback>
     </ImageBackground>
+        </KeyboardAvoidingView>
   )
 }
 
