@@ -1,4 +1,5 @@
 import userRouter from './userRoute';
+import postRouter from './postRoute';
 
 const init = app => {
     app.all('*', function (req, res, next) {
@@ -6,7 +7,8 @@ const init = app => {
         return next();
     });
 
-    app.use('/er', userRouter);
+    app.use('/er/user', userRouter);
+    app.use('/er/post', postRouter);
 };
 
 export default {

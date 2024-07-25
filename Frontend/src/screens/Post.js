@@ -1,16 +1,14 @@
 import { StyleSheet, Text, View, ImageBackground, SafeAreaView, Platform, TouchableOpacity, TextInput, KeyboardAvoidingView, Keyboard, Button, Image, Alert, ScrollView } from 'react-native'
 import backgroundImage from '../assets/ui-images/post.png'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import GlobalStyles from '../GlobalStyles'
 import { Feather } from '@expo/vector-icons';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from 'react-native';
-import tick from '../assets/ui-images/tick.jpeg'
 import * as ImagePicker from "expo-image-picker";
 import { Cloudinary } from "@cloudinary/url-gen";
-import cities from '../utils/cities.js';
-import states from '../utils/states.json'
-import { SelectList } from 'react-native-dropdown-select-list';
+import { useDispatch } from 'react-redux';
+import { addPostDetails } from '../features/slices/post.js';
 
 const shadowByPlatform = `${Platform.OS === 'android' ? 'shadow-lg shadow-black' : 'shadow-sm shadow-black'}`
 const cld = new Cloudinary({
@@ -37,16 +35,13 @@ const Post = ({ navigation }) => {
   const [image, setImage] = useState([]);
   const [error, setError] = useState(null);
   const [title, setTitle] = useState('');
-  const [specs, setSpecs] = useState('');
+  const [specification, setspecification] = useState('');
   const [description, setDescription] = useState('');
   const [city, setCity] = useState('');
   const [locality, setLocality] = useState('');
   const [state, setState] = useState('');
 
-  useEffect(() => {
-    // console.log('Upload buttons state:', uploadButtons);
-    // console.log('Removed', selectedImage)
-  }, [uploadButtons]);
+  const dispatch = useDispatch();
 
 
   const pickImage = async (id) => {
@@ -123,6 +118,12 @@ const Post = ({ navigation }) => {
 
   }
 
+  const handleNextButton = () => {
+    dispatch(addPostDetails({title, specification, description }))
+    navigation.navigate('Price');
+    
+  }
+
 
 
   return (
@@ -193,7 +194,7 @@ const Post = ({ navigation }) => {
                 <View className=' w-[70%] h-8 my-[3%]'>
                   <Text className='text-xs px-1'>Specification*</Text>
                   <TextInput className='border border-slate-300 h-8 rounded-xl px-5'
-                    value={specs} onChangeText={setSpecs} placeholder="Enter Specifications of the Product" />
+                    value={specification} onChangeText={setspecification} placeholder="Enter Specifications of the Product" />
                 </View>
 
                 <View className=' w-[70%] h-16 my-[3%]'>
@@ -207,7 +208,7 @@ const Post = ({ navigation }) => {
 
 
                 {/* <TouchableOpacity onPress={() => navigation.navigate('Price')} */}
-                <TouchableOpacity onPress={() => navigation.navigate('Price')}
+                <TouchableOpacity onPress={handleNextButton}
                   className='w-[40%] h-8 my-[7%] items-center justify-center bg-ui_red rounded-xl'>
                   <Text className='text-white font-bold'>Next</Text>
                 </TouchableOpacity>

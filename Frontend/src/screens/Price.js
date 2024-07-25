@@ -1,11 +1,13 @@
 import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Switch, Text, TextInput, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native'
 import GlobalStyles from '../GlobalStyles'
 import { ImageBackground } from 'react-native'
 import backgroundImage from '../assets/ui-images/post.png'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { MaterialIcons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux'
+import { addPostPrice } from '../features/slices/post'
 
 const categories = [
   { key: '1', value: 'Cars' },
@@ -20,11 +22,25 @@ const categories = [
 ]
 
 const Price = ({ navigation }) => {
+  const [dailyPrice, setDailyPrice] = useState();
+  const [weeklyPrice, setWeeklyPrice] = useState();
+  const [monthlyPrice, setMonthlyPrice] = useState();
+  const [depositAmount, setDepositAmount] = useState();
   const [category, setCategory] = useState();
   const [isDepositAmountEnabled, setIsDepositAmountEnabled] = useState(false);
 
+  const dispatch = useDispatch();
+
+
   const handleDepositAmountSwitch = () => {
     setIsDepositAmountEnabled(previousState => !previousState);
+  }
+
+  const handleNextButton = () => {
+    dispatch(addPostPrice({dailyPrice, weeklyPrice, monthlyPrice, depositAmount, category }))
+    navigation.navigate('Location')
+  
+    
   }
   return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -51,17 +67,20 @@ const Price = ({ navigation }) => {
               <View className='flex w-[90%]'>
               <Text className='text-xs'>Price a Day</Text>
                 <TextInput className='border border-slate-300 h-8 w-[100%] rounded-md px-5 my-1 mr-1'
-                  placeholder='Enter amount per Day' keyboardType='numeric' />
+                  placeholder='Enter amount per Day' keyboardType='numeric' 
+                  onChangeText={setDailyPrice}/>
               </View>
               <View className='flex w-[90%]'>
               <Text className='text-xs'>Price a Week</Text>
                 <TextInput className='border border-slate-300 h-8 w-[100%] rounded-md px-5 my-1 mr-1'
-                  placeholder='Enter amount per Week' keyboardType='numeric' />
+                  placeholder='Enter amount per Week' keyboardType='numeric' 
+                  onChangeText={setWeeklyPrice}/>
               </View>
               <View className='flex w-[90%]'>
               <Text className='text-xs'>Price a Month</Text>
                 <TextInput className='border border-slate-300 h-8 w-[100%] rounded-md px-5 my-1 mr-1'
-                  placeholder='Enter amount per Month' keyboardType='numeric' />
+                  placeholder='Enter amount per Month' keyboardType='numeric' 
+                  onChangeText={setMonthlyPrice}/>
               </View>
             </View>
 
@@ -71,7 +90,8 @@ const Price = ({ navigation }) => {
               <Text className='text-xs'>Do you want to set a prior deposit amount?</Text>
               <Switch value={isDepositAmountEnabled} onValueChange={handleDepositAmountSwitch} className='my-1'/>
               {isDepositAmountEnabled && <TextInput className='border border-slate-300 h-8 w-[100%] rounded-md px-5 my-1 mr-1'
-                  placeholder='Enter the Security/Deposit Amount' keyboardType='numeric' />}
+                  placeholder='Enter the Security/Deposit Amount' keyboardType='numeric' 
+                  onChangeText={setDepositAmount}/>}
             </View>
             </View>
 
@@ -87,7 +107,7 @@ const Price = ({ navigation }) => {
 
             {/* Create Post Button */}
             <View className='justify-center items-center w-[100%]'>
-            <TouchableOpacity onPress={() => navigation.navigate('Location')}
+            <TouchableOpacity onPress={handleNextButton}
                   className='w-[40%] h-8 items-center justify-center bg-ui_red rounded-xl'>
                   <Text className='text-white font-bold'>Next</Text>
                 </TouchableOpacity>
