@@ -19,6 +19,7 @@ import SignUp from './src/screens/SignUp';
 import Location from './src/screens/Location';
 
 
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 

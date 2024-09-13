@@ -6,16 +6,10 @@ import { Feather } from '@expo/vector-icons';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from 'react-native';
 import * as ImagePicker from "expo-image-picker";
-import { Cloudinary } from "@cloudinary/url-gen";
 import { useDispatch } from 'react-redux';
 import { addPostDetails } from '../features/slices/post.js';
 
 const shadowByPlatform = `${Platform.OS === 'android' ? 'shadow-lg shadow-black' : 'shadow-sm shadow-black'}`
-const cld = new Cloudinary({
-  cloud: {
-    cloudName: 'dsoqxv8kk'
-  }
-});
 
 const cityList = [
   { key: 1, value: 'hyderabad' },
@@ -32,7 +26,7 @@ const Post = ({ navigation }) => {
   ]);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [image, setImage] = useState([]);
+  const [images, setImage] = useState([]);
   const [error, setError] = useState(null);
   const [title, setTitle] = useState('');
   const [specification, setspecification] = useState('');
@@ -40,9 +34,27 @@ const Post = ({ navigation }) => {
   const [city, setCity] = useState('');
   const [locality, setLocality] = useState('');
   const [state, setState] = useState('');
+  const [cloudName] = useState("dsoqxv8kk");
+  const [uploadPreset] = useState("aoh4fpwm");
+  const [publicId, setPublicId] = useState("");
+
+  const [uwConfig] = useState({
+    cloudName,
+    uploadPreset
+    // cropping: true, //add a cropping step
+    // showAdvancedOptions: true,  //add advanced options (public_id and tag)
+    // sources: [ "local", "url"], // restrict the upload sources to URL and local files
+    // multiple: false,  //restrict upload to a single file
+    // folder: "user_images", //upload files to the specified folder
+    // tags: ["users", "profile"], //add the given tags to the uploaded files
+    // context: {alt: "user_uploaded"}, //add the given context data to the uploaded files
+    // clientAllowedFormats: ["images"], //restrict uploading to image files only
+    // maxImageFileSize: 2000000,  //restrict file size to less than 2MB
+    // maxImageWidth: 2000, //Scales the image down to a width of 2000 pixels before uploading
+    // theme: "purple", //change to a purple theme
+  });
 
   const dispatch = useDispatch();
-
 
   const pickImage = async (id) => {
     const { status } = await ImagePicker.
@@ -58,20 +70,21 @@ const Post = ({ navigation }) => {
       );
     } else {
 
-      // Launch the image library and get 
-      // the selected image 
+      // Launch the images library and get 
+      // the selected images 
       const result =
         await ImagePicker.launchImageLibraryAsync();
 
 
       if (!result.canceled) {
-        // If an image is selected (not cancelled),  
+        // If an images is selected (not cancelled),  
         // update the file state variable 
-        setImage([...image, result.assets[0].uri]);
+        setImage([...images, result.assets[0]]);
         const updatedButtons = uploadButtons.map(button =>
           button.id === id ? { ...button, hasImage: true, uri: result.assets[0].uri } : button
         );
         setUploadButtons(updatedButtons);
+        console.log('resultImages', JSON.stringify(result, null, 2))
         setSelectedImage(result.assets[0].uri);
 
         // Clear any previous errors 
@@ -84,7 +97,7 @@ const Post = ({ navigation }) => {
   };
 
   const handleConfirmDeleteImage = () => {
-    Alert.alert('Are you sure you want to remove the image?', '', [
+    Alert.alert('Are you sure you want to remove the images?', '', [
       {
         text: 'Cancel',
         onPress: () => console.log('cancel'),
@@ -107,10 +120,8 @@ const Post = ({ navigation }) => {
   }
 
   const handleSelectedImage = (id) => {
-    console.log("id", id)
     setSelectedImage(uploadButtons[id].uri);
-    console.log("SetSelected image called", selectedImage)
-
+    console.log('Selected Images Called', selectedImage);
   }
 
   const imageUploadHanlder = async () => {
@@ -119,7 +130,7 @@ const Post = ({ navigation }) => {
   }
 
   const handleNextButton = () => {
-    dispatch(addPostDetails({title, specification, description }))
+    dispatch(addPostDetails({title, specification, description, images}))
     navigation.navigate('Price');
     
   }
@@ -147,7 +158,7 @@ const Post = ({ navigation }) => {
                     <View className='w-[100%] flex-row'>
                       <View style={styles.imageContainer} className='mt-3  w-[80%] items-end'>
                         <Image source={{ uri: selectedImage }}
-                          style={styles.image}
+                          style={styles.images}
                         />
                       </View>
                       <View className='w-[20%] items-end'>
@@ -180,6 +191,11 @@ const Post = ({ navigation }) => {
                       }
                     </View>))}
                 </View>
+
+
+
+
+
               </View>
 
               {/* Input Fields */}
@@ -244,7 +260,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  image: {
+  images: {
     width: 250,
     height: "100%",
     borderRadius: 8,

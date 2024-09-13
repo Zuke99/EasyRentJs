@@ -13,6 +13,7 @@ const initialState = {
   city: '',
   state: '',
   locality: '',
+  images: [],
   error: null,
   success: false, // for monitoring the registration process.
   message:'',
@@ -26,6 +27,7 @@ const postSlice = createSlice({
         state.title = action.payload.title;
         state.specification = action.payload.specification;
         state.description = action.payload.description;
+        state.images = action.payload.images;
     },
     addPostPrice: (state, action) => {
         state.dailyPrice = action.payload.dailyPrice;

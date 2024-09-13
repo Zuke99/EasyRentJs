@@ -9,29 +9,103 @@ import states from '../utils/states.json'
 import { addPostLocation } from '../features/slices/post.js'
 import { createPost } from '../features/actions/postActions.js'
 import { useDispatch, useSelector } from 'react-redux'
+import { Cloudinary } from '@cloudinary/url-gen'
 
 const Location = ({ navigation }) => {
 
   const [city, setCity] = useState('');
   const [locality, setLocality] = useState('');
   const [state, setState] = useState('');
+  const [images, setImages] = useState([]);
 
   const postData = useSelector((state) => state.post);
   const dispatch = useDispatch();
 
+//   const cld = new Cloudinary({
+//     cloud: {
+//         cloudName: '<your_cloud_name>'
+//     },
+//     url: {
+//         secure: true
+//     }
+// });
 
+// upload(cld, {file: '<path_to_file>' , callback: (error, response) => {
+//         //.. handle response
+// }})
+
+
+
+//   const cld = new Cloudinary({
+//     cloud: {
+//         cloudName: 'dsoqxv8kk'
+//     },
+//     url: {
+//         secure: true
+//     }
+// });
+// const cloudinaryImageUpload = async () => {
+//     await upload(cld, {file: postData.images[0].uri, callback: (error, response) => {
+//             //.. handle response
+//             console.log("Response from CLoudinary", response);
+//             if(error) {
+//               console.log('error', error);
+//             }
+//     }})
+// }
 
   const handleCreatePostButton = () => {
-    dispatch(addPostLocation({ city, state, locality }));
-      console.log('postData', postData);
-      dispatch(createPost({...postData, city, state, locality}))
-      .then((result) => {
-        console.log('ResultInLocation',JSON.stringify(result, null, 2))
-        alert(result.payload.message);
-        navigation.navigate('MyAds')
-      });
+    const url = 'https://api.cloudinary.com/v1_1/dsoqxv8kk/upload'
+    const files = document.querySelector('[type=file]').files;
+
+    cloudinaryImageUpload();
+    // handleUploadToCloudinary().then(() => {
+      
+    // });
+    // dispatch(addPostLocation({ city, state, locality }));
+    //   console.log('postData', JSON.stringify(postData, null, 2));
+    //   dispatch(createPost({...postData, city, state, locality}))
+    //   .then((result) => {
+    //     console.log('ResultInLocation',JSON.stringify(result, null, 2))
+    //     setImages(result.meta.arg.images);
+    //     alert(result.payload.message);
+    //     navigation.navigate('MyAds')
+    //   });
       
   }
+
+  const uploadImages = async (image) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', {
+        uri: image.uri,
+        type: image.mimeType,
+        name: image.fileName,
+      });
+      formData.append('upload_preset', 'YOUR_UPLOAD_PRESET');
+  
+      const response = await fetch(`https://api.cloudinary.com/v1_1/dsoqxv8kk/image/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+  
+      const data = await response.json();
+      console.log('Cloudinary URL:', data.secure_url);
+      return data.secure_url;
+    } catch (error) {
+      console.error('Cloudinary upload failed', error);
+      return null;
+    }
+  }
+
+  const handleUploadToCloudinary = async () => {
+    const uploadPromises = images.map(uploadImages);
+    const imageUrls = await Promise.all(uploadPromises);
+    console.log('Uploaded Image URLs:', imageUrls);
+    // You can now save these URLs in your MongoDB
+  };
+
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -10}
